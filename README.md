@@ -52,7 +52,7 @@ Answer to yarn's questions. Note that project must be `private` and with name st
 
 ## How it works? TL;DR
 
-- CI config generates per-package jobs based on the CI-config file of the package. 
+- Script generates per-package jobs based on the CI-config file of the package. 
 - New branches should be named depending on the prefix of the package, the changes to which they are adding. Because of this to the pipeline will be added only related jobs.
 - There are changes detection scripts thats will determine changed packages. This scripts are launched on `prepare` stage for all branches and will mark changed packages.
 - CI keeps track of whole package-dependencies tree of a package. Any changes to the package-dependency will be reflected in its dependants (i.e. dependant CI jobs will be pushed to the pipeline for dependency package).
