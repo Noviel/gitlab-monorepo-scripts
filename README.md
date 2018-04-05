@@ -25,7 +25,7 @@ In order to execute scripts CI should be run with an image with following instal
 - Node.js
 - Yarn
 
-By will be used an suitable image based on Alpine Linux.
+By default will be used an suitable image based on Alpine Linux.
 
 For `container` jobs will be used `docker` based image.
 
