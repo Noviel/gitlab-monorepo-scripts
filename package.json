@@ -1,0 +1,20 @@
+{
+  "name": "gitlab-monorepo-scripts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GitLab Monorepo Scripts for generating CI/CD configuration",
+  "author": "Alexander Snov <snov.contact@gmail.com>",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "prepare-ci": "node scripts/generateCIConfig.js && git add .gitlab-ci.yml",
+    "precommit": "yarn prepare-ci"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "husky": "^0.14.3"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@prefix/sample-project",
+  "version": "0.1.0",
+  "description": "Sample Project",
+  "main": "index.js",
+  "author": "Alexander Snov <snov.contact@gmail.com>",
+  "private": true
+}

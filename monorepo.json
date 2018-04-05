@@ -1,0 +1,6 @@
+{
+  "packagesPrefix": "@my-project",
+  "packagesRoot": "packages/",
+  "packageCIConfig": "ci.json",
+  "baseYAML": "./base.gitlab-ci.yml"
+}

@@ -1,0 +1,82 @@
+image: snov/node-dqnt
+
+stages:
+  - prepare
+  - prebuild
+  - test
+  - build
+  - container
+  - staging
+  - production
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  CI_SERVER_URL: https://gitlab.com
+  DOCKER_DRIVER: overlay
+  DOCKER_HOST: 'tcp://docker:2375'
+
+cache:
+  paths:
+    - node_modules/
+
+.only-production-ci: &only-production-ci
+    only:
+      - master
+
+.only-staging-ci: &only-staging-ci
+    only:
+      - dev
+
+.only-main-branches-ci: &only-main-branches-ci
+    only:
+      - dev
+      - /^release-.*$/
+      - master
+      - /^root-.*$/
+
+.docker: &docker
+  image:
+    docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - apk update && apk add bash
+
+.docker-dev: &docker-dev
+  <<: *docker
+  <<: *only-staging-ci
+
+.docker-prod: &docker-prod
+  <<: *docker
+  <<: *only-production-ci
+
+.rust: &rust
+  image:
+    rustlang/rust:nightly
+  before_script:
+    - rustup target add wasm32-unknown-unknown --toolchain nightly
+    - cargo install wasm-gc
+    - cargo install wasm-bindgen-cli
+
+prepare:
+  stage: prepare
+  artifacts:
+    paths:
+      - scripts/.DEPENDENCIES
+      - scripts/.LAST_GREEN_COMMIT
+      - scripts/.DIRTY
+      - scripts/.PACKAGES
+  script:
+    - ./scripts/last_green_commit.sh
+    - yarn install
+    - node ./scripts/indexPackagesLocations.js
+    - node ./scripts/indexPackagesDependencies.js
+    - node ./scripts/indexChangedPackages.js
+
+test all packages:
+  <<: *only-main-branches-ci
+  stage: test
+  script:
+    - yarn test
+
+# End of core config
