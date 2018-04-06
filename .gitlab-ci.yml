@@ -16,6 +16,8 @@ variables:
   DOCKER_HOST: 'tcp://docker:2375'
 
 cache:
+  untracked: true
+  key: "$CI_BUILD_REF_NAME"
   paths:
     - node_modules/
 
