@@ -90,7 +90,7 @@ test all packages:
   only:
     - dev
     - /^root-.*$/
-    - /^pyph-.*$/
+    - /^sp-.*$/
     - /^release-.*$/
 
 .only-sample-project-ci: &only-sample-project-ci
@@ -98,7 +98,7 @@ test all packages:
     - master
     - dev
     - /^root-.*$/
-    - /^pyph-.*$/
+    - /^sp-.*$/
     - /^release-.*$/
 
 build sample-project:

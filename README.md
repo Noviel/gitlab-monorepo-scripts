@@ -80,8 +80,7 @@ CI config is generated on precommit stage. Script will check `{packagesRoot}` fo
 
 ### Options
 
-- `name` - `string`, required.
-- `branchPrefix` - `string`, required. Determine with what prefix should be named branch corresponding to this package.
+- `branchPrefix` - `string`. Determine with what prefix should be named branch corresponding to this package. default: same as name of the directory of the package.
 - `ci` - `boolean`, default: `true`. if `false` CI will be skipped completely.
 - `build` - `boolean|'separate'`, default: `false`. Define if a packages should be built. If 'separate' option is chosen CI will create separate build jobs for `staging` and `production`. Usefull for providing different environment variables for different targets.
 - `pre` - `boolean`, default: `false`. Should `build` job be executed in `prebuild` stage. Usefull for libraries with build artifacts that are used by other packages

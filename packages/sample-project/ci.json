@@ -1,5 +1,4 @@
 {
-  "name": "sample-project",
-  "branchPrefix": "pyph",
+  "branchPrefix": "sp",
   "build": true
 }

@@ -1,4 +1,4 @@
-const { resolve } = require('path');
+const { resolve, basename } = require('path');
 const { appendFileSync, writeFileSync, lstatSync, readdirSync } = require('fs');
 
 const {
@@ -23,8 +23,18 @@ const getPackageJSONPath = pkg =>
 
 const getPackageJSONContent = pkg => require(getPackageJSONPath(pkg));
 
-const getPackageCIConfig = pkg =>
-  require(resolve(rootDir, packagesRoot, pkg, packageCIConfig));
+const getPackageCIConfig = pkg => {
+  const CIConfig = require(resolve(
+    rootDir,
+    packagesRoot,
+    pkg,
+    packageCIConfig
+  ));
+
+  CIConfig.name = basename(pkg);
+
+  return CIConfig;
+};
 
 const getDependencyPackages = pkg => {
   const json = getPackageJSONContent(pkg);

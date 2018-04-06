@@ -29,7 +29,7 @@ function getTag(stage) {
   If we push new `auth-some-changes` branch - any packages that depends on `auth`
   should run corresponding CI jobs.
 */
-function createOnlyYAML({ name, branchPrefix }, { stage = '' }) {
+function createOnlyYAML({ name, branchPrefix = name }, { stage = '' }) {
   const deps = getDependencyPackages(name)
     .map(d => `    - /^${d.prefix}-.*$/`)
     .join('\n');
