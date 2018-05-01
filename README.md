@@ -25,7 +25,7 @@ In order to execute scripts CI should be run with an image with following instal
 - Node.js
 - Yarn
 
-By default will be used an suitable image based on Alpine Linux.
+By will be used an suitable image based on Alpine Linux.
 
 For `container` jobs will be used `docker` based image.
 
@@ -52,7 +52,7 @@ Answer to yarn's questions. Note that project must be `private` and with name st
 
 ## How it works? TL;DR
 
-- Script generates per-package jobs based on the CI-config file of the package. 
+- CI config generates per-package jobs based on the CI-config file of the package. 
 - New branches should be named depending on the prefix of the package, the changes to which they are adding. Because of this to the pipeline will be added only related jobs.
 - There are changes detection scripts thats will determine changed packages. This scripts are launched on `prepare` stage for all branches and will mark changed packages.
 - CI keeps track of whole package-dependencies tree of a package. Any changes to the package-dependency will be reflected in its dependants (i.e. dependant CI jobs will be pushed to the pipeline for dependency package).
@@ -80,7 +80,9 @@ CI config is generated on precommit stage. Script will check `{packagesRoot}` fo
 
 ### Options
 
-- `branchPrefix` - `string`. Determine with what prefix should be named branch corresponding to this package. default: same as name of the directory of the package.
+- `name` - `string`, required.
+- `branchPrefix` - `string`, required. Determine with what prefix should be named branch corresponding to this package.
+- `dependencies` - `object` with first level package-dependencies of the package, default: `{}`. Sometimes there is impossible to use yarn workspace dependencies directly by listing them in `package.json` (for example, in Firebase Functions). By listing dependencies here we will still have correct dependencies tree to trigger relative jobs. 
 - `ci` - `boolean`, default: `true`. if `false` CI will be skipped completely.
 - `build` - `boolean|'separate'`, default: `false`. Define if a packages should be built. If 'separate' option is chosen CI will create separate build jobs for `staging` and `production`. Usefull for providing different environment variables for different targets.
 - `pre` - `boolean`, default: `false`. Should `build` job be executed in `prebuild` stage. Usefull for libraries with build artifacts that are used by other packages

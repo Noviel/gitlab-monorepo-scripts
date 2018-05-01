@@ -1,6 +1,7 @@
 #!/bin/bash
 
+package=${1}
 target=${2}
 
 ./node_modules/.bin/firebase use ${target}
-./node_modules/.bin/firebase deploy --only hosting
+yarn workspace @dqnt/${package} deploy

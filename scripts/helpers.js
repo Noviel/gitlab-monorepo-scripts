@@ -36,19 +36,24 @@ const getPackageCIConfig = pkg => {
   return CIConfig;
 };
 
+const addDependency = (source, target) => {
+  if (source) {
+    for (const dep in source) {
+      if (target.indexOf(dep) < 0) {
+        target.push(dep);
+      }
+    }
+  }
+};
+
 const getDependencyPackages = pkg => {
   const json = getPackageJSONContent(pkg);
   const deps = [];
-  if (json.dependencies) {
-    for (const dep in json.dependencies) {
-      deps.push(dep);
-    }
-  }
-  if (json.devDependencies) {
-    for (const dep in json.devDependencies) {
-      deps.push(dep);
-    }
-  }
+  addDependency(json.dependencies, deps);
+  addDependency(json.devDependencies, deps);
+  addDependency(getPackageCIConfig(pkg).dependencies, deps);
+
+  console.log(pkg, deps);
 
   return deps
     .filter(d => d.match(packagesPrefix))

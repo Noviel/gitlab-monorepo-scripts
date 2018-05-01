@@ -135,19 +135,6 @@ function createBuildYAML(
   );
 }
 
-function createContainerYAML({ name, build }, { stage = 'staging' }) {
-  return `container ${stage} ${name}:
-  <<: *docker-${stage === 'production' ? 'prod' : 'dev'}
-  stage:
-    container
-  script:
-    - scripts/run_if_changed.sh package/cp_gitlab.sh ${name} ${getTag(stage)}
-  dependencies:
-    - prepare
-    - build ${build === 'separate' ? `${stage} ` : ''}${name}
-`;
-}
-
 function createDeployYAML(config, { stage = 'staging' }) {
   const { name, build, deploy } = config;
   const url = getEnvironmentUrl(config, stage);
@@ -160,7 +147,7 @@ function createDeployYAML(config, { stage = 'staging' }) {
 
   let script = '';
   if (deploy === true) {
-    script += `    - scripts/run_if_changed.sh package/cp_heroku.sh ${name} ${getTag(
+    script += `    - scripts/run_if_changed.sh package/publish_heroku.sh ${name} ${getTag(
       stage
     )} ${config.heroku[stage]}/web\n`;
   } else if (deploy === 'firebase') {
@@ -173,17 +160,19 @@ function createDeployYAML(config, { stage = 'staging' }) {
       : `  <<: *only-${stage}-ci\n`;
 
   return (
-    `${stage} ${name}:\n` +
+    `deploy ${stage} ${name}:\n` +
     includes +
     `  stage:\n` +
-    `    ${stage}\n` +
+    `    deploy\n` +
     `  environment:\n` +
     `    name: ${stage}${url ? `\n    url: ${url}` : ''}\n` +
     `  script:\n` +
     script +
     `  dependencies:\n` +
     `    - prepare\n` +
-    `    - build ${build === 'separate' ? `${stage} ` : ''}${name}\n`
+    (build && build !== 'external'
+      ? `    - build ${build === 'separate' ? `${stage} ` : ''}${name}\n`
+      : '')
   );
 }
 
@@ -218,7 +207,7 @@ function createPackageCIConfig(data) {
 
   let buildData = [];
 
-  if (build) {
+  if (build && build !== 'external') {
     if (build === 'separate') {
       buildData = []
         .concat(createBuildYAML(data, { stage: 'staging' }))
@@ -228,7 +217,7 @@ function createPackageCIConfig(data) {
     }
   }
 
-  const container = deploy === true;
+  const shouldAddDeployJob = deploy && deploy !== 'external';
 
   const result = [
     `\n${'#'.repeat(32)}\n# ${data.name} package\n`,
@@ -237,10 +226,12 @@ function createPackageCIConfig(data) {
   ]
     .concat(test ? createTestYAML(data) : [])
     .concat(buildData)
-    .concat(container ? createContainerYAML(data, { stage: 'staging' }) : [])
-    .concat(container ? createContainerYAML(data, { stage: 'production' }) : [])
-    .concat(deploy ? createDeployYAML(data, { stage: 'staging' }) : [])
-    .concat(deploy ? createDeployYAML(data, { stage: 'production' }) : [])
+    .concat(
+      shouldAddDeployJob ? createDeployYAML(data, { stage: 'staging' }) : []
+    )
+    .concat(
+      shouldAddDeployJob ? createDeployYAML(data, { stage: 'production' }) : []
+    )
     .concat(pages ? createPagesYAML(data, { stage: 'staging' }) : []);
 
   return result.join('\n');
