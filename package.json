@@ -1,6 +1,6 @@
 {
   "name": "gitlab-monorepo-scripts",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "description": "GitLab Monorepo Scripts for generating CI/CD configuration",
   "author": "Alexander Snov <snov.contact@gmail.com>",

@@ -25,7 +25,7 @@ In order to execute scripts CI should be run with an image with following instal
 - Node.js
 - Yarn
 
-By will be used an suitable image based on Alpine Linux.
+By default will be used an suitable image based on Alpine Linux.
 
 For `container` jobs will be used `docker` based image.
 
@@ -80,7 +80,6 @@ CI config is generated on precommit stage. Script will check `{packagesRoot}` fo
 
 ### Options
 
-- `name` - `string`, required.
 - `branchPrefix` - `string`, required. Determine with what prefix should be named branch corresponding to this package.
 - `dependencies` - `object` with first level package-dependencies of the package, default: `{}`. Sometimes there is impossible to use yarn workspace dependencies directly by listing them in `package.json` (for example, in Firebase Functions). By listing dependencies here we will still have correct dependencies tree to trigger relative jobs. 
 - `ci` - `boolean`, default: `true`. if `false` CI will be skipped completely.
