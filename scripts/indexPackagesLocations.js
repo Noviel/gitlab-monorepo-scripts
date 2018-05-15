@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-const { exec } = require('child_process');
-const path = require('path');
+const { exec } = require("child_process");
+const path = require("path");
 
-const { getDirectories, getPackageCIConfig } = require('./helpers');
+const { getDirectories, getPackageCIConfig } = require("./helpers");
 
-const { packagesRoot } = require('../monorepo.json');
+const { packagesRoot } = require("../monorepo.json");
 
 const packagesWithLocations = getDirectories(packagesRoot).map(location => {
   return {
     package: getPackageCIConfig(location).name,
-    location: path.relative(process.cwd(), location),
+    location: path.relative(process.cwd(), location)
   };
 });
 

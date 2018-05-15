@@ -1,16 +1,16 @@
 # GitLab Monorepo Scripts
 
-Scripts that will generate GitLab CI configuration for monorepo projects. 
+Scripts that will generate GitLab CI configuration for monorepo projects.
 
 Inspired by [awesome-inc/monorepo.gitlab](https://github.com/awesome-inc/monorepo.gitlab/tree/8db25c19388a1821a7d285eda93ab2bd5e3b6aef)
 
 ## Features
 
-- Generate per-package CI jobs 
-- Execute jobs only for changed packages
-- Containerization with Docker
-- Deploy Node.js applications to Heroku
-- Deploy static to Firebase Hosting
+* Generate per-package CI jobs
+* Execute jobs only for changed packages
+* Containerization with Docker
+* Deploy Node.js applications to Heroku
+* Deploy static to Firebase Hosting
 
 These features are archived with `yarn workspaces`, shell scripts and by following few branch naming rules.
 
@@ -18,12 +18,12 @@ These features are archived with `yarn workspaces`, shell scripts and by followi
 
 In order to execute scripts CI should be run with an image with following installed tools:
 
-- bash
-- curl
-- git
-- jq
-- Node.js
-- Yarn
+* bash
+* curl
+* git
+* jq
+* Node.js
+* Yarn
 
 By default will be used an suitable image based on Alpine Linux.
 
@@ -52,10 +52,10 @@ Answer to yarn's questions. Note that project must be `private` and with name st
 
 ## How it works? TL;DR
 
-- CI config generates per-package jobs based on the CI-config file of the package. 
-- New branches should be named depending on the prefix of the package, the changes to which they are adding. Because of this to the pipeline will be added only related jobs.
-- There are changes detection scripts thats will determine changed packages. This scripts are launched on `prepare` stage for all branches and will mark changed packages.
-- CI keeps track of whole package-dependencies tree of a package. Any changes to the package-dependency will be reflected in its dependants (i.e. dependant CI jobs will be pushed to the pipeline for dependency package).
+* CI config generates per-package jobs based on the CI-config file of the package.
+* New branches should be named depending on the prefix of the package, the changes to which they are adding. Because of this to the pipeline will be added only related jobs.
+* There are changes detection scripts thats will determine changed packages. This scripts are launched on `prepare` stage for all branches and will mark changed packages.
+* CI keeps track of whole package-dependencies tree of a package. Any changes to the package-dependency will be reflected in its dependants (i.e. dependant CI jobs will be pushed to the pipeline for dependency package).
 
 ## CI Configuration
 
@@ -63,10 +63,10 @@ Answer to yarn's questions. Note that project must be `private` and with name st
 
 `monorepo.json` is required file that defines global CI options.
 
-- `packagesPrefix` - `string`, required. Prefix used in `package.json` of every package for naming package.
-- `packagesRoot` - `string`, required. Relative to root directory path to packages root folder. 
-- `packageCIConfig` - `string`, required. Filename of the file with per-package CI configuration.
-- `baseYAML` - `string`, required. Filename of the file with base CI global configuration.
+* `packagesPrefix` - `string`, required. Prefix used in `package.json` of every package for naming package.
+* `packagesRoot` - `string`, required. Relative to root directory path to packages root folder.
+* `packageCIConfig` - `string`, required. Filename of the file with per-package CI configuration.
+* `baseYAML` - `string`, required. Filename of the file with base CI global configuration.
 
 ### scripts/base.gitlab-ci.yml
 
@@ -80,20 +80,21 @@ CI config is generated on precommit stage. Script will check `{packagesRoot}` fo
 
 ### Options
 
-- `branchPrefix` - `string`, required. Determine with what prefix should be named branch corresponding to this package.
-- `dependencies` - `object` with first level package-dependencies of the package, default: `{}`. Sometimes there is impossible to use yarn workspace dependencies directly by listing them in `package.json` (for example, in Firebase Functions). By listing dependencies here we will still have correct dependencies tree to trigger relative jobs. 
-- `ci` - `boolean`, default: `true`. if `false` CI will be skipped completely.
-- `build` - `boolean|'separate'`, default: `false`. Define if a packages should be built. If 'separate' option is chosen CI will create separate build jobs for `staging` and `production`. Usefull for providing different environment variables for different targets.
-- `pre` - `boolean`, default: `false`. Should `build` job be executed in `prebuild` stage. Usefull for libraries with build artifacts that are used by other packages
-- `toolchain` - `string`, default: `nodejs`. Toolchain that will be used for `build`. Supported toolchains: `nodejs`, `rust`.
-- `artifacts` - `[string]`, required for packages with `build` stage. Paths that will be added to artifacts of the job.
-- `artifactsPath` - `'package'|'global'`, default: `package`. If `package` `artifacts` paths will be prefixed with `$PACKAGE_ROOT/`, if `global` paths will be used as is. 
-- `heroku` - `object`, required for packages with `deploy` stage. Defines Heroku targets to deploy.
-  - `staging` - `string`, required.
-  - `production` - `string`, required.
-- `deploy` - `boolean|'firebase'`, default: `false`. Produce image and deploy it if `true`. Deploy to Firebase Hosting if `firebase`.
-- `test` - `boolean`, default: `false`.
-- `pages` - `boolean`, default: `false`. If `true` this job will trigger GitLab Pages.
+* `branchPrefix` - `string`, required. Determine with what prefix should be named branch corresponding to this package.
+* `dependencies` - `object` with first level package-dependencies of the package, default: `{}`. Sometimes there is impossible to use yarn workspace dependencies directly by listing them in `package.json` (for example, in Firebase Functions). By listing dependencies here we will still have correct dependencies tree to trigger relative jobs.
+* `ci` - `boolean`, default: `true`. if `false` CI will be skipped completely.
+* `build` - `boolean|'separate'`, default: `false`. Define if a packages should be built. If 'separate' option is chosen CI will create separate build jobs for `staging` and `production`. Usefull for providing different environment variables for different targets.
+* `pre` - `boolean`, default: `false`. Should `build` job be executed in `prebuild` stage. Usefull for libraries with build artifacts that are used by other packages
+* `toolchain` - `string`, default: `nodejs`. Toolchain that will be used for `build`. Supported toolchains: `nodejs`, `rust`.
+* `artifacts` - `[string]`, required for packages with `build` stage. Paths that will be added to artifacts of the job.
+* `artifactsPath` - `'package'|'global'`, default: `package`. If `package` `artifacts` paths will be prefixed with `$PACKAGE_ROOT/`, if `global` paths will be used as is.
+* `heroku` - `object`, required for packages with `deploy` stage. Defines Heroku targets to deploy.
+  * `staging` - `string`, required.
+  * `production` - `string`, required.
+* `deploy` - `boolean|'firebase'`, default: `false`. Produce image and deploy it if `true`. Deploy to Firebase Hosting if `firebase`.
+* `test` - `boolean`, default: `false`.
+* `test:e2e` - `boolean|'staging'|'production'`, default: `false`. Add End-to-end tests to the pipeline. Currently supports tests via Cypress. See [End-to-end tests](#end-to-end-tests) for details.
+* `pages` - `boolean`, default: `false`. If `true` this job will trigger GitLab Pages.
 
 ### Variables
 
@@ -130,15 +131,17 @@ First we specify stage where variable should be provided, e.g. `build`. Then we 
 ## Branches
 
 ### Main Branches
-- `master` - latest production branch
-- `dev` - latest development branch
-- `release-*` - the only type of branches which allowed to be merged into `master`
+
+* `master` - latest production branch
+* `dev` - latest development branch
+* `release-*` - the only type of branches which allowed to be merged into `master`
 
 ### Branch Rules
-- Git branch may change **only one package** in the most cases
-- Git branch must be conventionally named starting with a package's prefix defined in `<package>/{packageCIConfig}.json`. It will help CI add to the pipeline only related to this package jobs
-- Words are separated by a `-`
-- `root-` prefix for changes in multiple packages and global changes that affect potentially every package. **This branch will run OOC jobs for every package!**
+
+* Git branch may change **only one package** in the most cases
+* Git branch must be conventionally named starting with a package's prefix defined in `<package>/{packageCIConfig}.json`. It will help CI add to the pipeline only related to this package jobs
+* Words are separated by a `-`
+* `root-` prefix for changes in multiple packages and global changes that affect potentially every package. **This branch will run OOC jobs for every package!**
 
 ## Details
 
@@ -152,7 +155,42 @@ Global required stage. Added for every pipeline. Adds to CI meta information abo
 
 #### Test
 
-Per-package optional stage. Added for every branch if `test` in `{packageCIConfig}.json` is `true`. Running all tests in a signle job is faster than running a couple of tests each inside it's own job. So for main branches will be lauched tests for all packages inside a single job. 
+Per-package optional stage. Added for every branch if `test` in `{packageCIConfig}.json` is `true`. Running all tests in a signle job is faster than running a couple of tests each inside it's own job. So for main branches will be lauched tests for all packages inside a single job.
+
+##### End-to-end tests
+
+End-to-end tests can be enabled for every package in `{packageCIConfig}.json`.
+
+```json
+{
+  "test:e2e": {
+    "target": "staging" | "production" | "*" | true,
+    "platform": "cypress",
+    "artifacts": ["videos"]
+  }
+}
+```
+
+* `'staging'` or `'production'` target - tests will be added only for corresponding target.
+* `'*'` or `true` target - tests will be added for all targets
+* `'cypress'` is a default platform
+
+There are some requirements for `package.json` file:
+
+* It must has `start:e2e` and `test:e2e` scripts
+
+Sample scripts for Cypress:
+
+```json
+{
+  "scripts": {
+    "start:e2e": "node server.js",
+    "test:e2e": "wait-on http://localhost:8080 && cypress run"
+  }
+}
+```
+
+`wait-on` is utility library that should be installed. It will wait for 2xx response from server. See [here for more details on CI with Cypress](https://docs.cypress.io/guides/guides/continuous-integration.html#Booting-Your-Server).
 
 #### Build
 
@@ -184,15 +222,15 @@ Technique of last green commit is used to determine the origin point for decidin
 
 ### Main branches
 
-- master
-- dev
-- release-*
+* master
+* dev
+* release-\*
 
 Main branches trigger pipeline for every package. Even if package was not changed - corresponding jobs will be included to the pipeline. It is necessary because we can't tell changes to which package will be merged into these branches. It can be any package and CI should be able to run jobs for every package. Real job will be performed only if package was marked as changed. Still there are overhead for starting jobs, but there is no other way with GitLab for now.
 
 ### Feature branches
 
-- {branchPrefix}-*
+* {branchPrefix}-\*
 
 Newly created branches has no green commit and therefore every package is assummed as changed. Jobs with false-positive changes checks will be added to the pipeline. It is a exactly the same overhead as one for main branches. But this time it can be eliminated with branch naming rules. There is a contract that no other package has changed in the branch except that with which the branch was assosiated. Therefore only related to the package jobs can be included to the pipeline.
 

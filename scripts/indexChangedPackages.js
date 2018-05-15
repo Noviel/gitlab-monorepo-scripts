@@ -1,8 +1,8 @@
-const { exec } = require('child_process');
+const { exec } = require("child_process");
 
-const { getDirectories, getPackageCIConfig } = require('./helpers');
+const { getDirectories, getPackageCIConfig } = require("./helpers");
 
-const { packagesRoot } = require('../monorepo.json');
+const { packagesRoot } = require("../monorepo.json");
 
 const packagesData = getDirectories(packagesRoot).map(getPackageCIConfig);
 

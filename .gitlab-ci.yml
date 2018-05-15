@@ -3,8 +3,8 @@ image: snov/node-dqnt
 stages:
   - prepare
   - prebuild
-  - test
   - build
+  - test
   - deploy
 
 variables:
@@ -40,6 +40,10 @@ cache:
     - docker:dind
   before_script:
     - apk update && apk add bash
+
+.cypress: &cypress
+  image:
+    snov/node-dqnt-cypress
 
 .docker-dev: &docker-dev
   <<: *docker
@@ -107,5 +111,6 @@ build sample-project:
   script:
     - scripts/run_if_changed.sh package/build.sh sample-project nodejs
   artifacts:
+    expire_in: 1 week
     paths:
 
