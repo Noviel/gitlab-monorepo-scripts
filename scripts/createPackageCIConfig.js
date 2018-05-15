@@ -155,7 +155,7 @@ function createTestE2EYAML(data, { stage }) {
 
   return (
     `test:e2e ${name} ${stage}:\n` +
-    `  <<: *${platform}\n` +
+    `  <<: *${platform}-include\n` +
     only +
     `  stage:
     test\n` +

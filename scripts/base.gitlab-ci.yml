@@ -7,6 +7,11 @@ stages:
   - test
   - deploy
 
+before_script:
+  - echo "Executing standard before script"
+  - yarn config set cache-folder .yarn
+  - yarn cache dir
+
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
   CI_SERVER_URL: https://gitlab.com
@@ -14,9 +19,10 @@ variables:
   DOCKER_HOST: 'tcp://docker:2375'
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: try-global-cache
   paths:
     - node_modules/
+    - .yarn/
 
 .only-production-ci: &only-production-ci
     only:
@@ -41,7 +47,7 @@ cache:
   before_script:
     - apk update && apk add bash
 
-.cypress: &cypress
+.cypress-include: &cypress-include
   image:
     snov/node-dqnt-cypress
 
